@@ -10,11 +10,11 @@
 module.exports = (robot) ->
   robot.respond /(image|img)( me)? (.*)/i, (msg) ->
     imageMe msg, msg.match[3], (url) ->
-      msg.send url
+      msg.send "![](#{url})"
 
   robot.respond /animate( me)? (.*)/i, (msg) ->
     imageMe msg, msg.match[2], true, (url) ->
-      msg.send url
+      msg.send "![](#{url})"
 
   robot.respond /(?:mo?u)?sta(?:s|c)he?(?: me)? (.*)/i, (msg) ->
     type = Math.floor(Math.random() * 3)

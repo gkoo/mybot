@@ -24,7 +24,6 @@
   },
 
   "dependencies": {
-    "hubot-prat":    ">= 0.0.1",
     "hubot":         ">= 2.6.0 < 3.0.0",
     "hubot-scripts": ">= 2.5.0 < 3.0.0",
     "websocket":     ">=1.0.8",
