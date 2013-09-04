@@ -8,5 +8,7 @@
   "haters.coffee",
   "eardropping.coffee",
   "dilbert.coffee",
+  "xkcd.coffee",
+  "stocks.coffee",
   "reload.coffee"
 ]
