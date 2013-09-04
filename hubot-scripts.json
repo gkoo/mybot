@@ -2,5 +2,9 @@
   "redis-brain.coffee",
   "shipit.coffee",
   "aww.coffee",
-  "weather.coffee"
+  "weather.coffee",
+  "decide.coffee",
+  "dealwithit.coffee",
+  "haters.coffee",
+  "reload.coffee"
 ]
