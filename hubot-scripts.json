@@ -9,5 +9,6 @@
   "eardropping.coffee",
   "xkcd.coffee",
   "stocks.coffee",
+  "penny-arcade.coffee",
   "reload.coffee"
 ]

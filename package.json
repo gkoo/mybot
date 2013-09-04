@@ -27,7 +27,9 @@
     "hubot":         ">= 2.6.0 < 3.0.0",
     "hubot-scripts": ">= 2.5.0 < 3.0.0",
     "websocket":     ">=1.0.8",
-    "underscore":    ">=1.5.1"
+    "underscore":    ">=1.5.1",
+    "htmlparser":    "1.7.6",
+    "soupselect":    "0.2.0"
   },
 
   "engines": {
