@@ -1,15 +1,18 @@
 [
-  "redis-brain.coffee",
-  "shipit.coffee",
   "aww.coffee",
-  "weather.coffee",
-  "decide.coffee",
   "dealwithit.coffee",
-  "haters.coffee",
-  "eardropping.coffee",
-  "xkcd.coffee",
-  "stocks.coffee",
-  "penny-arcade.coffee",
+  "decide.coffee",
   "dilbert.coffee",
-  "reload.coffee"
+  "eardropping.coffee",
+  "haters.coffee",
+  "redis-brain.coffee",
+  "penny-arcade.coffee",
+  "reload.coffee",
+  "remind.coffee",
+  "remember.coffee",
+  "shipit.coffee",
+  "stocks.coffee",
+  "weather.coffee",
+  "word-of-the-day.coffee",
+  "xkcd.coffee"
 ]
