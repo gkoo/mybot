@@ -3,3 +3,4 @@ node_modules/htmlparser
 node_modules/soupselect
 node_modules/underscore
 node_modules/websocket
+node_modules/xml2js

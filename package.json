@@ -32,7 +32,8 @@
     "websocket":     ">=1.0.8",
     "underscore":    ">=1.5.1",
     "htmlparser":    "1.7.6",
-    "soupselect":    "0.2.0"
+    "soupselect":    "0.2.0",
+    "xml2js":        ">=0.2.8"
   },
 
   "engines": {
