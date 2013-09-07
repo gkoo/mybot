@@ -26,6 +26,8 @@
   "dependencies": {
     "hubot":         ">= 2.6.0 < 3.0.0",
     "hubot-scripts": ">= 2.5.0 < 3.0.0",
+    "hubot-dinosaur-comics": "0.0.2",
+    "hubot-lefthanded-toons": "0.0.1",
     "hubot-prat":    "0.0.4",
     "websocket":     ">=1.0.8",
     "underscore":    ">=1.5.1",
