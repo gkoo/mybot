@@ -3,5 +3,13 @@
 npm install
 export PATH="node_modules/.bin:node_modules/hubot/node_modules/.bin:$PATH"
 
+export HUBOT_PRAT_SERVER_URL="PRAT_SERVER_URL"
+export HUBOT_PRAT_API_KEY="PRAT_API_KEY"
+export HUBOT_PRAT_SECRET="HUBOT_PRAT_SECRET"
+export HUBOT_PRAT_BOT_NAME="HUBOT_PRAT_BOT_NAME"
+export WORDNIK_API_KEY="WORDNIK_API_KEY"
+export WOTD_PROVIDER="WOTD_PROVIDER"
+export HUBOT_FORECAST_API_KEY="HUBOT_FORECAST_API_KEY"
+
 exec node_modules/.bin/hubot "$@"
 
