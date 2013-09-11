@@ -3,5 +3,12 @@
 npm install
 export PATH="node_modules/.bin:node_modules/hubot/node_modules/.bin:$PATH"
 
+export HUBOT_PRAT_SERVER_URL="ws://localhost:5000/eventhub"
+export HUBOT_PRAT_API_KEY="PRAT_API_KEY_HERE"
+export HUBOT_PRAT_SECRET="PRAT_SECRET_HERE"
+export HUBOT_PRAT_BOT_NAME="PRAT_BOT_NAME_HERE"
+export WORDNIK_API_KEY="WORDNIK_API_KEY_HERE"
+export HUBOT_FORECAST_API_KEY="FORECAST_API_KEY_HERE"
+
 exec node_modules/.bin/hubot "$@"
 

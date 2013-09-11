@@ -1,5 +1,4 @@
 .DS_Store*
-node_modules/hubot
 node_modules/htmlparser
 node_modules/soupselect
 node_modules/underscore
