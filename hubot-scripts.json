@@ -16,5 +16,6 @@
   "stocks.coffee",
   "weather.coffee",
   "word-of-the-day.coffee",
+  "wordnik.coffee",
   "xkcd.coffee"
 ]
