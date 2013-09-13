@@ -122,7 +122,6 @@ module.exports = (robot) ->
   rotten = new Rotten robot
 
   robot.respond /rotten (me )?(.*)$/i, (message) ->
-    message.send "Well, let's see..."
     rotten.search message.match[2], (err, movie) ->
       unless err?
         message.send movie.toDetailedString()
