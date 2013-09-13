@@ -88,7 +88,7 @@ class Rotten
       page_limit: 1
       (err, res, body) ->
         movie = JSON.parse(body)['movies'][0]
-           
+
         unless err? or movie?
           return callback("Couldn't find anything, sorry.")
 
@@ -113,10 +113,10 @@ class RottenMovie
     "#{@info['critics_consensus']}"
 
   toReleaseString: ->
-    "#{@info['title']}, #{@info['release_dates']['dvd'] || @info['release_dates']['theater']} (#{@info['ratings']['audience_score']}%)"
+    "(#{@info['ratings']['audience_score']}%) #{@info['title']}, #{@info['release_dates']['dvd'] || @info['release_dates']['theater']}"
 
   toString: ->
-    "#{@info['title']} (#{@info['ratings']['audience_score']}%)"
+    "(#{@info['ratings']['audience_score']}%) #{@info['title']}"
 
 module.exports = (robot) ->
   rotten = new Rotten robot
