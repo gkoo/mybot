@@ -25,7 +25,7 @@ class Rotten
     return callback @__links[match] if @__links
     @send "#{@api_url}/lists.json", {},
       (err, res, body) =>
-        @__links = JSON.parse(body)['links']
+        @__links = JSON.parse(body).links
         callback @__links[match]
 
   _movie_links: (match, callback) =>
@@ -34,7 +34,7 @@ class Rotten
       (link) =>
         @send link, {},
           (err, res, body) =>
-            @__movie_links = JSON.parse(body)['links']
+            @__movie_links = JSON.parse(body).links
             callback @__movie_links[match]
 
   _dvd_links: (match, callback) =>
@@ -43,7 +43,7 @@ class Rotten
       (link) =>
         @send link, {},
           (err, res, body) =>
-            @__dvd_links = JSON.parse(body)['links']
+            @__dvd_links = JSON.parse(body).links
             callback @__dvd_links[match]
 
   in_theaters: (callback) =>
@@ -53,7 +53,7 @@ class Rotten
           page_limit: 20
           country: 'us'
           (err, res, body) ->
-            movies = JSON.parse(body)['movies']
+            movies = JSON.parse(body).movies
 
             unless err? or movies?
               return callback("Couldn't find anything, sorry.")
@@ -75,8 +75,8 @@ class Rotten
           page_limit: 20
           country: 'us'
           (err, res, body) ->
-            movies = JSON.parse(body)['movies']
-           
+            movies = JSON.parse(body).movies
+
             unless err? or movies?
               return callback("Couldn't find anything, sorry.")
 
@@ -87,7 +87,7 @@ class Rotten
       q: query
       page_limit: 1
       (err, res, body) ->
-        movie = JSON.parse(body)['movies'][0]
+        movie = JSON.parse(body).movies[0]
 
         unless err? or movie?
           return callback("Couldn't find anything, sorry.")
@@ -104,19 +104,25 @@ class RottenMovie
   constructor: (@info) ->
 
   toDetailedString: ->
-    "#{@info['title']} (#{@info['year']})\n" +
-    "#{@info['runtime']} min, #{@info['mpaa_rating']}\n\n" +
-    "Critics:\t" + "#{@info['ratings']['critics_score']}%" +
-      "\t\"#{@info['ratings']['critics_rating']}\"\n" +
-    "Audience:\t" + "#{@info['ratings']['audience_score']}%" +
-      "\t\"#{@info['ratings']['audience_rating']}\"\n\n" +
-    "#{@info['critics_consensus']}"
+    "#{@info.title} (#{@info.year})\n" +
+    "#{@info.runtime} min, #{@info.mpaa_rating}\n\n" +
+    "Critics:\t" + "#{@info.ratings.critics_score}%" +
+      "\t\"#{@info.ratings.critics_rating}\"\n" +
+    "Audience:\t" + "#{@info.ratings.audience_score}%" +
+      "\t\"#{@info.ratings.audience_rating}\"\n\n" +
+    "#{@info.critics_consensus}"
 
   toReleaseString: ->
-    "(#{@info['ratings']['audience_score']}%) #{@info['title']}, #{@info['release_dates']['dvd'] || @info['release_dates']['theater']}"
+    "(#{@info.ratings.audience_score}%) #{@info.title}, #{@info.release_dates.dvd || @info.release_dates.theater}"
 
   toString: ->
-    "(#{@info['ratings']['audience_score']}%) #{@info['title']}"
+    "(#{@info.ratings.audience_score}%) #{@info.title}"
+
+  getPosterUrl: ->
+    posters = @info.posters
+    if posters
+      return posters.detailed || posters.profile || posters.thumbnail || posters.original
+    return null
 
 module.exports = (robot) ->
   rotten = new Rotten robot
@@ -124,6 +130,8 @@ module.exports = (robot) ->
   robot.respond /rotten (me )?(.*)$/i, (message) ->
     rotten.search message.match[2], (err, movie) ->
       unless err?
+        posterUrl = movie.getPosterUrl()
+        message.send "![](#{posterUrl})" if posterUrl
         message.send movie.toDetailedString()
       else
         message.send err
