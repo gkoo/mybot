@@ -48,7 +48,7 @@ lookupWeather = (msg, data, err) ->
     humidity = (current.humidity * 100).toFixed 0
     temperature = getTemp(current.temperature)
     text = ""
-    text += "Weather for #{data.formattedAddress}:" if data.formattedAddress
+    text += "Weather for #{data.formattedAddress}:\n" if data.formattedAddress
     text += "It is currently #{temperature} #{current.summary}, #{humidity}% humidity"
     msg.send text
 
