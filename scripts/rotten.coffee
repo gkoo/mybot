@@ -96,6 +96,23 @@ class Rotten
 
     return
 
+  searchMultiple: (query, numResults, callback) =>
+    @send "#{@api_url}/movies.json",
+      q: query
+      page_limit: numResults
+      (err, res, body) ->
+        moviesArr = []
+        movies = JSON.parse(body).movies
+        for movie in movies
+          moviesArr.push(new RottenMovie(movie))
+
+        unless err? or movie?
+          return callback("Couldn't find anything, sorry.")
+
+        callback null, moviesArr
+
+    return
+
   send: (url, options, callback) =>
     options.apikey = @api_key
     @robot.http(url).query(options).get()(callback)
@@ -124,20 +141,50 @@ class RottenMovie
       return posters.detailed || posters.profile || posters.thumbnail || posters.original
     return null
 
+  createResponse: ->
+    posterUrl = @getPosterUrl()
+    response = ""
+    response += "![](#{posterUrl})\n" if posterUrl
+    response += @toDetailedString()
+    return response
+
 module.exports = (robot) ->
   rotten = new Rotten robot
 
   robot.respond /rotten (me )?(.*)$/i, (message) ->
     rotten.search message.match[2], (err, movie) ->
       unless err?
-        posterUrl = movie.getPosterUrl()
-        message.send "![](#{posterUrl})" if posterUrl
-        message.send movie.toDetailedString()
+        message.send movie.createResponse()
+      else
+        message.send err
+
+  robot.respond /rotten-top-(\d+) (.*)$/i, (message) ->
+    numResults = parseInt(message.match[1], 10)
+    title = message.match[2]
+    rotten.searchMultiple title, numResults, (err, movies) ->
+      unless err?
+        i = 0
+        response = ""
+        for movie in movies
+          response += "#{i}. #{movie.toString()}\n"
+        message.send response
+      else
+        message.send err
+
+  robot.respond /rotten-result \d+ (.*)$/i, (message) ->
+    numResults = parseInt(message.match[1], 10)
+    title = message.match[2]
+    rotten.searchMultiple title, numResults, (err, movies) ->
+      unless err?
+        if numResults > movies.length
+          message.send "There weren't that many results for #{title}."
+        else
+          movie = movies[numResults-1]
+          message.send movie.createResponse()
       else
         message.send err
 
   robot.respond /what(\')?s in theaters(\?)?$/i, (message) ->
-    message.send "Well, let's see..."
     rotten.in_theaters (err, movies) ->
       unless err?
         message.send (movie.toString() for movie in movies).join("\n")
@@ -145,7 +192,6 @@ module.exports = (robot) ->
         message.send err
 
   robot.respond /what(\')?s coming out ((on (dvd|blu(-)?ray))|(in theaters))(\?)?$/i, (message) ->
-    message.send "Well, let's see..."
     type = if message.match[2] is 'in theaters' then 'movies' else 'dvds'
     rotten.upcoming type, (err, movies) ->
       unless err?
