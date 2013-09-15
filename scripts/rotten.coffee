@@ -90,8 +90,7 @@ class Rotten
       page_limit: 1
       (err, res, body) ->
         response = JSON.parse(body)
-        if (response?.body?.movies)
-          movie = response.body?.movies[0]
+        movie = response.movies?[0]
 
         unless err? or movie?
           return callback("Couldn't find anything, sorry.")
