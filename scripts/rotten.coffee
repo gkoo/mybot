@@ -171,7 +171,7 @@ module.exports = (robot) ->
       else
         message.send err
 
-  robot.respond /rotten-result \d+ (.*)$/i, (message) ->
+  robot.respond /rotten-result (\d+) (.*)$/i, (message) ->
     numResults = parseInt(message.match[1], 10)
     title = message.match[2]
     rotten.searchMultiple title, numResults, (err, movies) ->
