@@ -10,6 +10,7 @@
 #   miyagawa
 
 cronJob = require('cron').CronJob
+{TextMessage} = require 'hubot'
 
 JOBS = {}
 
@@ -30,7 +31,7 @@ module.exports = (robot) ->
     for own id, job of robot.brain.data.cronjob
       registerNewJob robot, id, job[0], job[1], job[2]
 
-  robot.respond /(?:new|add) job "(.*?)" (.*)$/i, (msg) ->
+  robot.respond /(?:new|add) job ["'](.*?)["'] (.*)$/i, (msg) ->
     try
       id = createNewJob robot, msg.match[1], msg.message.user, msg.match[2]
       msg.send "Job #{id} created"
@@ -70,5 +71,5 @@ class Job
     [@pattern, @user, @message]
 
   sendMessage: (robot) ->
-    robot.send @user, @message
+    robot.receive new TextMessage @user, [robot.name, @message].join(' ')
 
