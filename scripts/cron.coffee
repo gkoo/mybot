@@ -14,14 +14,14 @@ cronJob = require('cron').CronJob
 
 JOBS = {}
 
-createNewJob = (robot, pattern, user, message) ->
+createNewJob = (robot, pattern, user, message, room) ->
   id = Math.floor(Math.random() * 1000000) while !id? || JOBS[id]
-  job = registerNewJob robot, id, pattern, user, message
+  job = registerNewJob robot, id, pattern, user, message, room
   robot.brain.data.cronjob[id] = job.serialize()
   id
 
-registerNewJob = (robot, id, pattern, user, message) ->
-  JOBS[id] = new Job(id, pattern, user, message)
+registerNewJob = (robot, id, pattern, user, message, room) ->
+  JOBS[id] = new Job(id, pattern, user, message, room)
   JOBS[id].start(robot)
   JOBS[id]
 
@@ -29,18 +29,18 @@ module.exports = (robot) ->
   robot.brain.on 'loaded', =>
     robot.brain.data.cronjob or= {}
     for own id, job of robot.brain.data.cronjob
-      registerNewJob robot, id, job[0], job[1], job[2]
+      registerNewJob robot, id, job[0], job[1], job[2], job[3]
 
   robot.respond /(?:new|add) job ["'](.*?)["'] (.*)$/i, (msg) ->
     try
-      id = createNewJob robot, msg.match[1], msg.message.user, msg.match[2]
+      id = createNewJob robot, msg.match[1], msg.message.user, msg.match[2], msg.message.room
       msg.send "Job #{id} created"
     catch error
       msg.send "Error caught parsing crontab pattern: #{error}. See http://crontab.org/ for the syntax"
 
   robot.respond /(?:list|ls) jobs?/i, (msg) ->
     for own id, job of robot.brain.data.cronjob
-      msg.send "#{id}: #{job[0]} @#{job[1].room} \"#{job[2]}\""
+      msg.send "#{id}: #{job[0]} \##{job[3]} \"#{job[2]}\""
 
   robot.respond /(?:rm|remove|del|delete) job (\d+)/i, (msg) ->
     id = msg.match[1]
@@ -52,11 +52,12 @@ module.exports = (robot) ->
       msg.send "Job #{id} does not exist"
 
 class Job
-  constructor: (id, pattern, user, message) ->
+  constructor: (id, pattern, user, message, room) ->
     @id = id
     @pattern = pattern
     @user = user
     @message = message
+    @room = room
 
   start: (robot) ->
     @cronjob = new cronJob(@pattern, =>
@@ -68,8 +69,9 @@ class Job
     @cronjob.stop()
 
   serialize: ->
-    [@pattern, @user, @message]
+    [@pattern, @user, @message, @room]
 
   sendMessage: (robot) ->
+    @user.room = @room
     robot.receive new TextMessage @user, [robot.name, @message].join(' ')
 
