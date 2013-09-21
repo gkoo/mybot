@@ -18,7 +18,7 @@ htmlparser = require "htmlparser"
 module.exports = (robot) ->
   robot.respond /((show|fetch)( me )?)?dilbert/i, (msg) ->
     dilbertRss msg, (url) ->
-      msg.send "![](#{url})"
+      msg.send url
 
 dilbertRegexp = /src=&quot;(.*.gif)/i
 dilbertRss = (msg, cb) ->
