@@ -34,13 +34,13 @@ module.exports = (robot) ->
   robot.respond /invisible bread$/i, (msg) ->
     getComic(msg, "http://invisiblebread.com")
 
-  #robot.respond /dino(saur)? comics? random$/i, (msg) ->
-    #msg.http("http://www.qwantz.com/index.php")
-        #.get() (err, res, body) ->
-          #handler = new htmlparser.DefaultHandler()
-          #parser = new htmlparser.Parser(handler)
-          #parser.parseComplete(body)
+  robot.respond /invisible bread random$/i, (msg) ->
+    msg.http("http://invisiblebread.com")
+        .get() (err, res, body) ->
+          handler = new htmlparser.DefaultHandler()
+          parser = new htmlparser.Parser(handler)
+          parser.parseComplete(body)
 
-          #randlink = Select handler.dom, ".randomquote a"
-          #href = randlink[1].attribs.href
-          #getComic(msg, href)
+          randlink = Select handler.dom, ".navi.navi-random"
+          href = randlink[0].attribs.href
+          getComic(msg, href)
