@@ -101,8 +101,18 @@ class PratBot extends Adapter
     @connection.send(JSON.stringify(json))
 
   send: (envelope, messages...) ->
+    imgRegEx = /^https?:\/\/.*\.(jpg|gif|png)$/i
+
     for msg in messages
       @robot.logger.debug "Sending to #{envelope.room}: #{msg}"
+
+      msg = msg.replace(/\s*$/, "")
+      match = msg.match(imgRegEx)
+
+      if match
+        imgUrl = match[0]
+        matchIndex = match.index
+        msg = msg.substring(0, matchIndex) + "![](#{imgUrl})" + msg.substring(matchIndex + imgUrl.length)
 
       outputJson =
         action: "publish_message"

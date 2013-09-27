@@ -34,13 +34,11 @@ module.exports = (robot) ->
   robot.respond /invisible bread$/i, (msg) ->
     getComic(msg, "http://invisiblebread.com")
 
-  robot.respond /invisible bread random$/i, (msg) ->
-    msg.http("http://invisiblebread.com")
-        .get() (err, res, body) ->
-          handler = new htmlparser.DefaultHandler()
-          parser = new htmlparser.Parser(handler)
-          parser.parseComplete(body)
-
-          randlink = Select handler.dom, ".navi.navi-random"
-          href = randlink[0].attribs.href
-          getComic(msg, href)
+  # need to figure out how to follow redirects
+  #robot.respond /invisible bread random$/i, (msg) ->
+    #msg.http("http://invisiblebread.com/?randomcomic&nocache=1")
+        #.get() (err, res, body) ->
+          #msg.send "err"
+          #msg.send err
+          #msg.send "res"
+          #msg.send JSON.stringify(res)
