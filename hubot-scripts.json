@@ -13,6 +13,7 @@
   "remember.coffee",
   "shipit.coffee",
   "stocks.coffee",
+  "urban.coffee",
   "word-of-the-day.coffee",
   "wordnik.coffee",
   "xkcd.coffee"
