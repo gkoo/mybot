@@ -17,15 +17,15 @@
 module.exports = (robot) ->
   robot.respond /(imdb|movie)( me)? (.*)/i, (msg) ->
     query = msg.match[3]
-    try
-      msg.http("http://mymovieapi.com/")
-        .query({
-          limit: 1
-          type: 'json'
-          plot: 'simple'
-          q: query
-        })
-        .get() (err, res, body) ->
+    msg.http("http://mymovieapi.com/")
+      .query({
+        limit: 1
+        type: 'json'
+        plot: 'simple'
+        q: query
+      })
+      .get() (err, res, body) ->
+        try
           list = JSON.parse(body)
           if movie = list[0]
             msg.send "![](#{movie.poster.cover}#.png)" if movie.poster
@@ -33,6 +33,6 @@ module.exports = (robot) ->
             msg.send "#{movie.imdb_url}"
           else
             msg.send "That's not a movie, yo."
-    catch e
-      msg.send "Trouble parsing the result from IMDB. Dagnabbit!"
+        catch e
+          msg.send "Trouble parsing the result from IMDB. Dagnabbit!"
 
