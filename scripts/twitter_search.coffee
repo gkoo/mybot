@@ -47,23 +47,23 @@ module.exports = (robot) ->
     unless twit
       twit = new Twit config
 
-      query = msg.match[1]
-      msg.send "Searching Twitter for \"#{query}\"..."
-      searchConfig =
-        q: "#{query}",
-        count: 5,
-        lang: 'en',
-        result_type: 'recent'
+    query = msg.match[1]
+    msg.send "Searching Twitter for \"#{query}\"..."
+    searchConfig =
+      q: "#{query}",
+      count: 5,
+      lang: 'en',
+      result_type: 'recent'
 
-      twit.get 'search/tweets', searchConfig, (err, reply) ->
-        return msg.send "Error retrieving tweets!" if err
-        return msg.send "No results returned!" unless reply?.statuses?.length
+    twit.get 'search/tweets', searchConfig, (err, reply) ->
+      return msg.send "Error retrieving tweets!" if err
+      return msg.send "No results returned!" unless reply?.statuses?.length
 
-        statuses = reply.statuses
-        return_val = ''
-        i = 0
-        for status, i in statuses
-          tmp = "**#{status.user.name}** (#{status.user.screen_name}): #{status.text}\n"
-          return_val += tmp
+      statuses = reply.statuses
+      return_val = ''
+      i = 0
+      for status, i in statuses
+        tmp = "**#{status.user.name}** (#{status.user.screen_name}): #{status.text}\n"
+        return_val += tmp
 
-        return msg.send return_val
+      return msg.send return_val
