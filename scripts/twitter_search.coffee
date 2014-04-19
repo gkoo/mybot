@@ -1,5 +1,5 @@
 # Description:
-#   gets tweet from user
+#   Searches tweets on Twitter.
 #
 # Dependencies:
 #   "twit": "1.1.6"
@@ -12,8 +12,7 @@
 #   HUBOT_TWITTER_ACCESS_TOKEN_SECRET
 #
 # Commands:
-#   hubot twitter <twitter username> - Show last tweet from <twitter username>
-#   hubot twitter <twitter username> <n> - Cycle through tweet with <n> starting w/ latest
+#   hubot twitter-search <query> - Search Twitter for a query
 #
 # Author:
 #   gkoo
