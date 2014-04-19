@@ -24,16 +24,17 @@
   },
 
   "dependencies": {
+    "htmlparser":    "1.7.6",
     "hubot":         ">= 2.6.0 < 3.0.0",
     "hubot-scripts": ">= 2.5.0 < 3.0.0",
     "hubot-dinosaur-comics":  ">=0.0.2",
     "hubot-lefthanded-toons": ">=0.0.2",
     "hubot-plusplus": ">=1.0.0",
     "hubot-prat":    "0.0.5",
-    "websocket":     ">=1.0.8",
-    "underscore":    ">=1.5.1",
-    "htmlparser":    "1.7.6",
     "soupselect":    "0.2.0",
+    "twit":          "1.1.x",
+    "underscore":    ">=1.5.1",
+    "websocket":     ">=1.0.8",
     "xml2js":        ">=0.2.8"
   },
 
