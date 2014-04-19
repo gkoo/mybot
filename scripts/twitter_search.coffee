@@ -51,7 +51,7 @@ module.exports = (robot) ->
       msg.send "Searching Twitter for \"#{query}\"..."
       searchConfig =
         q: "#{query}",
-        count: count || 5,
+        count: 5,
         lang: 'en',
         result_type: 'recent'
 
