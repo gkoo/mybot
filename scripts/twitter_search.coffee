@@ -30,7 +30,7 @@ config =
 module.exports = (robot) ->
   twit = undefined
 
-  robot.respond /twitter-search (.+) (\d)?/i, (msg) ->
+  robot.respond /twitter-search (.+)/i, (msg) ->
     unless config.consumer_key
       msg.send "Please set the HUBOT_TWITTER_CONSUMER_KEY environment variable."
       return
@@ -47,9 +47,8 @@ module.exports = (robot) ->
     unless twit
       twit = new Twit config
 
-      msg.send "Searching..."
       query = msg.match[1]
-      count = msg.match[2]
+      msg.send "Searching Twitter for \"#{query}\"..."
       searchConfig =
         q: "#{query}",
         count: count || 5,
