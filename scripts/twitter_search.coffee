@@ -63,7 +63,6 @@ module.exports = (robot) ->
       return_val = ''
       i = 0
       for status, i in statuses
-        tmp = "**#{status.user.name}** (#{status.user.screen_name}): #{status.text}\n"
-        return_val += tmp
+        return_val += "**@#{status.user.screen_name}** #{status.text}\n"
 
       return msg.send return_val
