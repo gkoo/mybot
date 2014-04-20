@@ -31,6 +31,7 @@
     "hubot-lefthanded-toons": ">=0.0.2",
     "hubot-plusplus": ">=1.0.0",
     "hubot-prat":    "0.0.5",
+    "hubot-tweets": ">=0.0.1",
     "soupselect":    "0.2.0",
     "twit":          "1.1.x",
     "underscore":    ">=1.5.1",
