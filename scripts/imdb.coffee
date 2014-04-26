@@ -28,7 +28,7 @@ module.exports = (robot) ->
         try
           list = JSON.parse(body)
           if movie = list[0]
-            msg.send "![](#{movie.poster.cover}#.png)" if movie.poster
+            msg.send "#{movie.poster.cover}" if movie.poster
             msg.send "#{movie.plot_simple}"
             msg.send "#{movie.imdb_url}"
           else

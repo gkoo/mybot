@@ -57,6 +57,7 @@ class Rotten
           (err, res, body) ->
             movies = JSON.parse(body).movies
 
+            console.log(err)
             unless err? or movies?
               return callback("Couldn't find anything, sorry.")
 
@@ -92,6 +93,8 @@ class Rotten
         response = JSON.parse(body)
         movie = response.movies?[0]
 
+        console.log(err)
+        console.log(response)
         unless err? or movie?
           return callback("Couldn't find anything, sorry.")
 
@@ -147,7 +150,7 @@ class RottenMovie
   createResponse: ->
     posterUrl = @getPosterUrl()
     response = ""
-    response += "![](#{posterUrl})\n" if posterUrl
+    response += "#{posterUrl}\n" if posterUrl
     response += @toDetailedString()
     return response
 
