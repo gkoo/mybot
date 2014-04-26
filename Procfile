@@ -1,1 +1,1 @@
-web: bin/hubot -a slack -n hieu
+web: bin/hubot --alias '!' -a slack -n hieu
