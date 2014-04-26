@@ -1,1 +1,1 @@
-web: bin/hubot -a prat -n Hieu
+web: bin/hubot -a slack -n hieu
