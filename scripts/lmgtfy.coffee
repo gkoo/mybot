@@ -12,7 +12,7 @@ doLmgtfy = (msg, query) ->
 
 doSmartGoogle = (msg, query) ->
   msg.http("https://www.google.com/search")
-    .query(q: query)
+    .query(q: encodeURIComponent(query))
     .get() (err, resp, body) ->
       handler = new htmlparser.DefaultHandler()
       parser = new htmlparser.Parser(handler)
@@ -20,7 +20,7 @@ doSmartGoogle = (msg, query) ->
 
       answer = Select handler.dom, "#aoba"
       if answer.length == 0
-        doLmgtfy(msg, query)
+        doLmgtfy(msg, encodeURIComponent(query))
       else
         msg.send answer[0].children[0].raw
 
