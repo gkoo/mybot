@@ -29,3 +29,7 @@ module.exports = (robot) ->
   robot.respond /what(\sis|'s)\s+([^\?]+)\??$/i, (msg) ->
     [_, _, query] = msg.match
     doSmartGoogle(msg, query)
+
+  robot.respond /google\s+([^\?]+)\??$/i, (msg) ->
+    [_, _, query] = msg.match
+    doSmartGoogle(msg, query)
