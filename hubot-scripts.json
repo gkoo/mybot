@@ -11,8 +11,7 @@
   "remind.coffee",
   "remember.coffee",
   "shipit.coffee",
-  "stocks.coffee",
-  "urban.coffee",
+  "stock.coffee",
   "word-of-the-day.coffee",
   "wordnik.coffee",
   "xkcd.coffee"
