@@ -9,9 +9,12 @@ htmlparser = require "htmlparser"
 Select     = require("soupselect").select
 
 doLmgtfy = (msg, query) ->
+  console.log(query)
   msg.send "Hey #{msg.message.user.name}, let me google that for you: http://lmgtfy.com?q=#{query}"
 
 doSmartGoogle = (msg, query) ->
+  console.log(1)
+  console.log(query)
   msg.http("https://www.google.com/search")
     .query(q: query)
     .get() (err, resp, body) ->
@@ -21,6 +24,7 @@ doSmartGoogle = (msg, query) ->
 
       answer = Select handler.dom, "#aoba"
       if answer.length == 0
+        console.log(query)
         doLmgtfy(msg, encodeURIComponent(query))
       else
         msg.send answer[0].children[0].raw
@@ -30,6 +34,6 @@ module.exports = (robot) ->
     [_, _, query] = msg.match
     doSmartGoogle(msg, query)
 
-  robot.respond /google\s+([^\?]+)\??$/i, (msg) ->
-    [_, _, query] = msg.match
+  robot.respond /google\s+(.*)$/i, (msg) ->
+    [_, query] = msg.match
     doSmartGoogle(msg, query)
