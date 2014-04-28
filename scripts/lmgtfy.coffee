@@ -1,5 +1,6 @@
 # Description:
 #   Hubot googles things for you!
+#   Hubot will first try to get smart results from Google. Otherwise, Hubot will run your search through lmgtfy.
 #
 # Commands:
 #   hubot what is _______?
@@ -12,7 +13,7 @@ doLmgtfy = (msg, query) ->
 
 doSmartGoogle = (msg, query) ->
   msg.http("https://www.google.com/search")
-    .query(q: encodeURIComponent(query))
+    .query(q: query)
     .get() (err, resp, body) ->
       handler = new htmlparser.DefaultHandler()
       parser = new htmlparser.Parser(handler)
