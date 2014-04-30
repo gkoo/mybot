@@ -9,7 +9,6 @@
   "redis-brain.coffee",
   "reload.coffee",
   "remind.coffee",
-  "remember.coffee",
   "shipit.coffee",
   "stock.coffee",
   "word-of-the-day.coffee",
