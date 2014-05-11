@@ -20,11 +20,11 @@ module.exports = (robot) ->
     mode        = msg.match[2] || 'driving'
     origin      = fillAddress(msg.match[3])
     destination = fillAddress(msg.match[4])
+    key         = process.env.HUBOT_GOOGLE_API_KEY
 
     if origin == destination
       return msg.send "Now you're just being silly."
 
-    key         = process.env.HUBOT_GOOGLE_API_KEY
     if !key
       msg.send "Please enter your Google API key in the environment variable HUBOT_GOOGLE_API_KEY."
     if mode == 'bike' or mode == 'biking'
@@ -32,6 +32,7 @@ module.exports = (robot) ->
 
     url         = "https://maps.googleapis.com/maps/api/directions/json"
     query       =
+      mode:        mode
       key:         key
       origin:      origin
       destination: destination
