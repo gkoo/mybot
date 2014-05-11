@@ -136,6 +136,7 @@ class RottenMovie
       "\t\"#{@info.ratings.critics_rating}\"\n" +
     "Audience:\t" + "#{@info.ratings.audience_score}%" +
       "\t\"#{@info.ratings.audience_rating}\"\n\n" +
+    "#{@info.links.alternate}\n" +
     "#{@info.critics_consensus}"
 
   toReleaseString: ->
