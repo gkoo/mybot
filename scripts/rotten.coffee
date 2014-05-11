@@ -61,6 +61,10 @@ class Rotten
             unless err? or movies?
               return callback("Couldn't find anything, sorry.")
 
+            movies.sort((movie1, movie2) ->
+              return movie2.ratings.critics_score - movie1.ratings.critics_score
+            )
+            console.log(JSON.stringify(movies))
             callback null, (new RottenMovie(movie) for movie in movies)
 
   upcoming: (type, callback) =>
