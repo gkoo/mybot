@@ -85,6 +85,7 @@ class Rotten
 
             callback null, (new RottenMovie(movie) for movie in movies)
 
+  # Returns info on the first result. ("I'm feeling lucky!")
   search: (query, callback) =>
     @send "#{@api_url}/movies.json",
       q: query
@@ -93,8 +94,6 @@ class Rotten
         response = JSON.parse(body)
         movie = response.movies?[0]
 
-        console.log(err)
-        console.log(response)
         unless err? or movie?
           return callback("Couldn't find anything, sorry.")
 
@@ -136,10 +135,10 @@ class RottenMovie
     "#{@info.critics_consensus}"
 
   toReleaseString: ->
-    "(#{@info.ratings.audience_score}%) #{@info.title}, #{@info.release_dates.dvd || @info.release_dates.theater}"
+    "(#{@info.ratings.critics_score}%) #{@info.title}, #{@info.release_dates.dvd || @info.release_dates.theater}"
 
   toString: ->
-    "(#{@info.ratings.audience_score}%) #{@info.title}"
+    "(#{@info.ratings.critics_score}%) #{@info.title}"
 
   getPosterUrl: ->
     posters = @info.posters
