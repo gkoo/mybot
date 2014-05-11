@@ -6,10 +6,21 @@
 
 module.exports = (robot) ->
 
+  fillAddress = (address) ->
+    if (address.match(/borderlands/i))
+      return '1109 Pebblewood Way, San Mateo, CA'
+    else if (address.match(/hhh/i))
+      return '516 Chesterton Ave, Belmont, CA'
+    else if (address.match(/airbnb/i))
+      return '888 Brannan St, San Francisco, CA'
+
+    return address
+
   robot.respond /((driving|walking|bike|biking|bicycling) )?directions from (.+) to (.+)/i, (msg) ->
     mode        = msg.match[2] || 'driving'
-    origin      = msg.match[3]
-    destination = msg.match[4]
+    origin      = fillAddress(msg.match[3])
+    destination = fillAddress(msg.match[4])
+
     key         = process.env.HUBOT_GOOGLE_API_KEY
     if !key
       msg.send "Please enter your Google API key in the environment variable HUBOT_GOOGLE_API_KEY."
