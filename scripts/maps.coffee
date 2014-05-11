@@ -59,7 +59,7 @@ module.exports = (robot) ->
         i++
 
       msg.send "http://maps.googleapis.com/maps/api/staticmap?size=400x400&" +
-               "path=weight:3%7Ccolor:red%7Cenc:#{route.overview_polyline}&sensor=false"
+               "path=weight:3%7Ccolor:red%7Cenc:#{route.overview_polyline.points}&sensor=false"
       msg.send response
     )
 
