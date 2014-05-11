@@ -58,7 +58,7 @@ module.exports = (robot) ->
 
   robot.respond /(?:(satellite|terrain|hybrid)[- ])?map( me)? (.+)/i, (msg) ->
     mapType  = msg.match[1] or "roadmap"
-    location = msg.match[3]
+    location = fillAddress(msg.match[3])
     mapUrl   = "http://maps.google.com/maps/api/staticmap?markers=" +
                 escape(location) +
                 "&size=400x400&maptype=" +
