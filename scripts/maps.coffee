@@ -21,6 +21,9 @@ module.exports = (robot) ->
     origin      = fillAddress(msg.match[3])
     destination = fillAddress(msg.match[4])
 
+    if origin == destination
+      return msg.send "Now you're just being silly."
+
     key         = process.env.HUBOT_GOOGLE_API_KEY
     if !key
       msg.send "Please enter your Google API key in the environment variable HUBOT_GOOGLE_API_KEY."
