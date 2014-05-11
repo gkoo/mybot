@@ -36,7 +36,7 @@ module.exports = (robot) ->
       i = 1
       for step in legs.steps
         instructions = step.html_instructions.replace(/<[^>]+>/g, '')
-        response += "#{i}. #{step.html_instructions} (#{step.distance.text})\n"
+        response += "#{i}. #{instructions} (#{step.distance.text})\n"
         i++
       msg.send response
     )
