@@ -172,7 +172,8 @@ module.exports = (robot) ->
         i = 0
         response = ""
         for movie in movies
-          response += "#{i}. #{movie.toString()}\n"
+          response += "#{i+1}. #{movie.toString()}\n"
+          i++
         message.send response
       else
         message.send err
