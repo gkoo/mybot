@@ -6,12 +6,15 @@
 
 module.exports = (robot) ->
 
-  robot.respond /directions from (.+) to (.+)/i, (msg) ->
-    origin      = msg.match[1]
-    destination = msg.match[2]
+  robot.respond /((driving|walking|bike|biking|bicycling) )?directions from (.+) to (.+)/i, (msg) ->
+    mode        = msg.match[2] || 'driving'
+    origin      = msg.match[3]
+    destination = msg.match[4]
     key         = process.env.HUBOT_GOOGLE_API_KEY
     if !key
       msg.send "Please enter your Google API key in the environment variable HUBOT_GOOGLE_API_KEY."
+    if mode == 'bike' or mode == 'biking'
+      mode = 'bicycling'
 
     url         = "https://maps.googleapis.com/maps/api/directions/json"
     query       =
@@ -35,7 +38,8 @@ module.exports = (robot) ->
       response += "#{distance} - #{duration}\n\n"
       i = 1
       for step in legs.steps
-        instructions = step.html_instructions.replace(/<[^>]+>/g, '')
+        instructions = step.html_instructions.replace(/<div[^>]+>/g, ' - ')
+        instructions = instructions.replace(/<[^>]+>/g, '')
         response += "#{i}. #{instructions} (#{step.distance.text})\n"
         i++
       msg.send response
