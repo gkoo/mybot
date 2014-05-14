@@ -12,6 +12,5 @@
   "shipit.coffee",
   "stock.coffee",
   "word-of-the-day.coffee",
-  "wordnik.coffee",
-  "xkcd.coffee"
+  "wordnik.coffee"
 ]
