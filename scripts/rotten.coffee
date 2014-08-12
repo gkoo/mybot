@@ -9,8 +9,8 @@
 #
 # Commands:
 #   hubot rotten [me] <movie>
-#   hubot rotten-top-[x] <movie> - the top x results for a movie query
-#   hubot rotten-result-[x] <movie> - get the xth result for a movie query
+#   hubot rotten top [x] <movie> - the top x results for a movie query
+#   hubot rotten result [x] <movie> - get the xth result for a movie query
 #   hubot what's in theaters?
 #   hubot what's coming out in theaters?
 #   hubot what's coming out on (dvd|bluray)? - there is not a distinction between dvd and bluray
@@ -162,13 +162,15 @@ module.exports = (robot) ->
   rotten = new Rotten robot
 
   robot.respond /rotten (me )?(.*)$/i, (message) ->
-    rotten.search message.match[2], (err, movie) ->
-      unless err?
-        message.send movie.createResponse()
-      else
-        message.send err
+    query = message.match[2]
+    if !query.match(/top\s+\d+/) && !query.match(/result\s+\d+/)
+      rotten.search query, (err, movie) ->
+        unless err?
+          message.send movie.createResponse()
+        else
+          message.send err
 
-  robot.respond /rotten-top-(\d+) (.*)$/i, (message) ->
+  robot.respond /rotten\s+top\s+(\d+) (.*)$/i, (message) ->
     numResults = parseInt(message.match[1], 10)
     title = message.match[2]
     rotten.searchMultiple title, numResults, (err, movies) ->
@@ -182,7 +184,7 @@ module.exports = (robot) ->
       else
         message.send err
 
-  robot.respond /rotten-result-(\d+) (.*)$/i, (message) ->
+  robot.respond /rotten\s+result\s+(\d+) (.*)$/i, (message) ->
     numResults = parseInt(message.match[1], 10)
     title = message.match[2]
     rotten.searchMultiple title, numResults, (err, movies) ->
