@@ -14,7 +14,7 @@ module.exports = (robot) ->
     robot.brain.data["#{screenname}Location"] = location
     msg.send "Okay, I'll remember that you are #{location}"
 
-  robot.respond /where is (.+)\??/i, (msg) ->
+  robot.respond /where is ([^?]+)\??/i, (msg) ->
     name = msg.match[1]
     if name == 'gordon'
       screenname = 'gkoo'
