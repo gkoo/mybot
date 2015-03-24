@@ -18,6 +18,10 @@ module.exports = (robot) ->
     name = msg.match[1]
     if name == 'gordon'
       screenname = 'gkoo'
+    else if name == 'willy'
+      screenname = 'willychu'
+    else if name == 'andrew'
+      screenname = 'dahtoe'
     else
       screenname = name.toLowerCase()
     location = robot.brain.data["#{screenname}Location"]
