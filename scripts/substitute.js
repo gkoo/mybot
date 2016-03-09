@@ -10,7 +10,7 @@
 // Commands:
 //   Hubot s/<first>/<second> - replaces any instances of `first` with `second` in the most recent messages
 //
-// AutHors:
+// Authors:
 //   gordon
 
 var substitute_re = /^s\/([^/]+?)\/([^/]+)\/?$/;
