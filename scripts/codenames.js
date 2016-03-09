@@ -18,44 +18,58 @@ var Codenames = {
   Game: function() {
     "use strict";
 
-    this.players = [];
+    this.players = {};
 
     this.COLOR_BLUE = 0;
     this.COLOR_RED = 1;
     this.COLOR_BLACK = 2;
     this.COLOR_BROWN = 3;
 
-    this.STATE_ACTIVE = 0;
-    this.STATE_INACTIVE = 1;
+    this.STATE_INACTIVE = 0;
+    this.STATE_PREGAME = 1;
+    this.STATE_GAME = 1;
 
     this.newGame = function() {
-      if (this.state === this.STATE_ACTIVE) {
+      if (this.state !== this.STATE_INACTIVE) {
         throw "Couldn't start a new game because there is already a game in progress.";
       }
 
-      this.generateTeams();
-      this.generateWords();
-      this.state = "active";
+      this.state = this.STATE_PREGAME;
     };
 
-    this.endGame = function() {
-      this.state = "ended";
+    this.start = function(msg){
+      if (this.state !== this.STATE_PREGAME) {
+        throw "Something went wrong, expected state " + this.STATE_PREGAME + " but got state " + this.state;
+      }
+      this.generateTeams(msg);
+      this.generateWords(msg);
     };
 
-    this.generateTeams = function() {
+    this.end = function() {
+      this.state = this.STATE_INACTIVE;
+    };
+
+    this.inProgress = function() {
+      return this.state !== this.STATE_INACTIVE;
+    };
+
+    this.generateTeams = function(msg) {
+      var team;
+
       this.teams = [];
-      this.teams.push(new Codenames.Team({ id: 1 }));
-      this.teams.push(new Codenames.Team({ id: 2 }));
+      this.teams.push(new Codenames.Team({ id: 1, color: "red", name: "Red Team" }));
+      this.teams.push(new Codenames.Team({ id: 2, color: "blue", name: "Blue Team" }));
 
       // Randomly generate teams
-      var numPlayers = this.players.length;
+      var playerKeys = Object.keys(this.players);
+      var numPlayers = playerKeys.length;
       var maxTeamSize = numPlayers / 2;
       var i;
       var rand;
       var player;
 
       for (i = 0; i < numPlayers; ++i) {
-        player = this.players[i];
+        player = this.players[playerKeys[i]];
         rand = Math.random();
         if (rand < 0.5 && this.teams[0].getTeamSize() < maxTeamSize) {
           this.teams[0].addPlayer(player);
@@ -63,6 +77,16 @@ var Codenames = {
           this.teams[1].addPlayer(player);
         }
       }
+
+      msg.send("The teams are...");
+
+      team = this.teams[0];
+      msg.send(team.name);
+      msg.send(team.players.map(function(teamPlayer) { return teamPlayer.handle; }).join("\n") + "\n");
+
+      team = this.teams[1];
+      msg.send(team.name);
+      msg.send(team.players.map(function(teamPlayer) { return teamPlayer.handle; }).join("\n"));
     };
 
     this.generateWords = function() {
@@ -119,6 +143,14 @@ var Codenames = {
 
       this.words = words;
     };
+
+    this.addPlayer = function(handle) {
+      this.players[handle] = new Codenames.Player({
+        handle: handle
+      });
+    };
+
+    this.state = this.STATE_INACTIVE;
   },
 
   Word: function(opt) {
@@ -131,6 +163,7 @@ var Codenames = {
   Team: function(opt) {
     "use strict";
     this.id = opt.id;
+    this.name = opt.name;
     this.players = [];
     this.addPlayer = function(player) { this.players.push(player); };
     this.getTeamSize = function() { return this.players.length; };
@@ -149,22 +182,58 @@ module.exports = function(robot) {
 
   // the game "singleton". yuck.
   var game = new Codenames.Game();
+  //var roomName = "codenames";
+  var roomName = "Shell";
 
-  robot.hear(/new codenames game/, function(msg) {
-    if (msg.envelope.room !== "codenames") {
-      msg.send("Please join #codenames to start a game");
+  robot.respond(/new codenames game/i, function(msg) {
+    if (msg.envelope.room !== roomName) {
+      return msg.send("Please join #codenames.");
+    }
+    if (game.inProgress()) {
+      return msg.send("There is already a game in progress. Either finish the game or end it " +
+          "by typing '" + robot.name + " end codenames game'.");
+    }
+
+    if (!game.inProgress()) {
+      game.newGame();
+      msg.send("Who's in? Respond with :hand:. When everyone's in, type '" + robot.name + " everyone's in'");
+    }
+  });
+
+  robot.respond(/end codenames game/i, function(msg) {
+    if (msg.envelope.room !== roomName) {
+      msg.send("Please join #codenames to end a game");
       return;
     }
 
-    if (game.state === Codenames.Game.STATE_ACTIVE) {
-      msg.send("There is already a game in progress. Either finish the game or end it by typing '" +
-               robot.name + " end codenames game'.");
-      return;
-    }
+    game.end();
+  });
 
-    if (game.state === Codenames.Game.STATE_INACTIVE) {
-      msg.send("Who's in? Respond with :hand:. When everyone's in, type " + robot.name + " everyone's in.");
+  robot.hear(/^:hand:$/i, function(msg) {
+    if (msg.envelope.room === roomName && game.inProgress()) {
+      console.log(msg.message.user);
+      game.addPlayer(msg.message.user.name);
     }
+  });
+
+  robot.respond(/(who's|who is) playing/i, function(msg) {
+    var response = "";
+    if (msg.envelope.room === roomName) {
+      if (game.inProgress()) {
+        response += "Here's a list of who's playing:";
+        Object.keys(game.players).forEach(function(playerHandle) {
+          response += "\n" + playerHandle;
+        });
+        msg.send(response);
+      }
+      else {
+        msg.send("There's no game in progress right now! To start a game, type '" + robot.name + " new codenames game'");
+      }
+    }
+  });
+
+  robot.respond(/everyone's in/i, function(msg) {
+    game.start(msg);
   });
 };
 
