@@ -7,7 +7,6 @@
   "penny-arcade.coffee",
   "redis-brain.coffee",
   "reload.coffee",
-  "remind.coffee",
   "shipit.coffee",
   "stock.coffee",
   "word-of-the-day.coffee",
