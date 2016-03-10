@@ -35,12 +35,16 @@ var Codenames = {
       }
 
       this.state = this.STATE_PREGAME;
+      this.players = {};
     };
 
     this.start = function(msg){
       var _this = this;
       if (this.state !== this.STATE_PREGAME) {
         throw "Something went wrong, expected state " + this.STATE_PREGAME + " but got state " + this.state;
+      }
+      if (Object.keys(this.players).length < 2) {
+        throw "You can't play with less than two players!";
       }
 
       this.generateTeams(function(teams) {
@@ -49,7 +53,9 @@ var Codenames = {
 
         team = teams[0];
         msg.send(team.name);
-        msg.send(team.players.map(function(teamPlayer) { return teamPlayer.handle; }).join("\n") + "\n");
+        msg.send(team.players.map(function(teamPlayer) {
+          return teamPlayer.handle + (teamPlayer.isSpymaster ? " (spymaster)" : "");
+        }).join("\n") + "\n");
 
         team = teams[1];
         msg.send(team.name);
@@ -94,6 +100,9 @@ var Codenames = {
           this.teams[1].addPlayer(player);
         }
       }
+
+      this.team[0].selectSpymaster();
+      this.team[1].selectSpymaster();
 
       cb(this.teams);
     };
@@ -174,9 +183,13 @@ var Codenames = {
     };
 
     this.addPlayer = function(handle) {
-      this.players[handle] = new Codenames.Player({
-        handle: handle
-      });
+      if (this.state === this.STATE_PREGAME) {
+        this.players[handle] = new Codenames.Player({
+          handle: handle
+        });
+      } else {
+        throw "Couldn't add player because state of game is " + this.state;
+      }
     };
 
     this.getColorName = function(color) {
@@ -190,6 +203,10 @@ var Codenames = {
         case this.COLOR_BLACK:
           return "Black";
       }
+    };
+
+    this.getPlayerByHandle = function(handle) {
+      return this.players[handle];
     };
 
     this.state = this.STATE_INACTIVE;
@@ -209,6 +226,16 @@ var Codenames = {
     this.players = [];
     this.addPlayer = function(player) { this.players.push(player); };
     this.getTeamSize = function() { return this.players.length; };
+    this.selectSpymaster = function(player) {
+      if (player) {
+        this.spymaster = player;
+      }
+      else {
+        // Choose a random spymaster
+        this.spymaster = this.players[Math.floor(Math.random() * this.getTeamSize())];
+      }
+      this.spymaster.isSpymaster = true;
+    };
   },
 
   Player: function(opt) {
@@ -216,6 +243,7 @@ var Codenames = {
     this.handle = opt.handle;
     this.name = opt.name;
     this.team = opt.team;
+    this.isSpymaster = false;
   }
 };
 
@@ -252,8 +280,12 @@ module.exports = function(robot) {
   });
 
   robot.hear(/^:hand:$/i, function(msg) {
-    if (msg.envelope.room === roomName && game.inProgress()) {
-      game.addPlayer(msg.message.user.name);
+    if (msg.envelope.room === roomName) {
+      try {
+        game.addPlayer(msg.message.user.name);
+      } catch (e) {
+        msg.send(e);
+      }
     }
   });
 
@@ -274,7 +306,11 @@ module.exports = function(robot) {
   });
 
   robot.respond(/everyone's in/i, function(msg) {
-    game.start(msg);
+    try {
+      game.start(msg);
+    } catch (e) {
+      msg.send(e);
+    }
   });
 };
 
