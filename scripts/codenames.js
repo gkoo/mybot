@@ -38,11 +38,30 @@ var Codenames = {
     };
 
     this.start = function(msg){
+      var _this = this;
       if (this.state !== this.STATE_PREGAME) {
         throw "Something went wrong, expected state " + this.STATE_PREGAME + " but got state " + this.state;
       }
-      this.generateTeams(msg);
-      this.generateWords(msg);
+
+      this.generateTeams(function(teams) {
+        var team;
+        msg.send("The teams are...");
+
+        team = teams[0];
+        msg.send(team.name);
+        msg.send(team.players.map(function(teamPlayer) { return teamPlayer.handle; }).join("\n") + "\n");
+
+        team = teams[1];
+        msg.send(team.name);
+        msg.send(team.players.map(function(teamPlayer) { return teamPlayer.handle; }).join("\n"));
+      });
+
+      this.generateWords(function(words) {
+        msg.send("The words are...");
+        words.forEach(function(word) {
+          msg.send(word.word + ": " + _this.getColorName(word.color));
+        });
+      });
     };
 
     this.end = function() {
@@ -53,9 +72,7 @@ var Codenames = {
       return this.state !== this.STATE_INACTIVE;
     };
 
-    this.generateTeams = function(msg) {
-      var team;
-
+    this.generateTeams = function(cb) {
       this.teams = [];
       this.teams.push(new Codenames.Team({ id: 1, color: "red", name: "Red Team" }));
       this.teams.push(new Codenames.Team({ id: 2, color: "blue", name: "Blue Team" }));
@@ -78,18 +95,10 @@ var Codenames = {
         }
       }
 
-      msg.send("The teams are...");
-
-      team = this.teams[0];
-      msg.send(team.name);
-      msg.send(team.players.map(function(teamPlayer) { return teamPlayer.handle; }).join("\n") + "\n");
-
-      team = this.teams[1];
-      msg.send(team.name);
-      msg.send(team.players.map(function(teamPlayer) { return teamPlayer.handle; }).join("\n"));
+      cb(this.teams);
     };
 
-    this.generateWords = function() {
+    this.generateWords = function(cb) {
       var totalRed = 9;
       var totalBlue = 8;
       var totalBlack = 1;
@@ -104,7 +113,25 @@ var Codenames = {
         "temple",
         "key",
         "drill",
-        "tooth"
+        "tooth",
+        "berlin",
+        "atlantis",
+        "pole",
+        "paper",
+        "chair",
+        "hawk",
+        "calf",
+        "hero",
+        "mandarin",
+        "amazon",
+        "glove",
+        "well",
+        // Here's where I'm adding random words from https://github.com/first20hours/google-10000-english/blob/master/20k.txt
+        "video",
+        "map",
+        "hotel",
+        "family",
+        "website"
       ];
       var i;
       var numChoices;
@@ -122,11 +149,11 @@ var Codenames = {
           // Assassin word
           --numBlackRemaining;
           color = this.COLOR_BLACK;
-        } else if (colorRand < totalRed && numRedRemaining > 0) {
+        } else if (colorRand < totalBlack + totalRed && numRedRemaining > 0) {
           // Red word
           --numRedRemaining;
           color = this.COLOR_RED;
-        } else if (colorRand < totalBlue && numBlueRemaining > 0) {
+        } else if (colorRand < totalBlack + totalRed + totalBlue && numBlueRemaining > 0) {
           // Blue word
           --numBlueRemaining;
           color = this.COLOR_BLUE;
@@ -142,12 +169,27 @@ var Codenames = {
       }
 
       this.words = words;
+
+      cb(words);
     };
 
     this.addPlayer = function(handle) {
       this.players[handle] = new Codenames.Player({
         handle: handle
       });
+    };
+
+    this.getColorName = function(color) {
+      switch (color) {
+        case this.COLOR_BLUE:
+          return "Blue";
+        case this.COLOR_RED:
+          return "Red";
+        case this.COLOR_BROWN:
+          return "Brown";
+        case this.COLOR_BLACK:
+          return "Black";
+      }
     };
 
     this.state = this.STATE_INACTIVE;
@@ -211,7 +253,6 @@ module.exports = function(robot) {
 
   robot.hear(/^:hand:$/i, function(msg) {
     if (msg.envelope.room === roomName && game.inProgress()) {
-      console.log(msg.message.user);
       game.addPlayer(msg.message.user.name);
     }
   });
