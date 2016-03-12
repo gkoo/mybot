@@ -309,12 +309,12 @@ module.exports = function(robot) {
 
   // the game "singleton". yuck.
   var game = new Codenames.Game();
-  //var roomName = "codenames";
-  var roomName = "Shell";
+  var roomName = "codenames";
+  //var roomName = "Shell";
 
   robot.respond(/new codenames game/i, function(msg) {
     if (msg.envelope.room !== roomName) {
-      return msg.send("Please join #codenames.");
+      return msg.send("Please join #" + roomName + ".");
     }
     if (game.inProgress()) {
       return msg.send("There is already a game in progress. Either finish the game or end it " +
