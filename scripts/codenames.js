@@ -69,12 +69,15 @@ var Codenames = {
         var generalResponse = "The words are...\n" + words.map(function(word) {
           return word.word;
         }).join("\n");
+        var extractWord = function(wordObj) {
+          return wordObj.word;
+        };
 
         var spymasterMessage = "You are the spymaster! Here are your words\n";
-        var redList = wordPool.getRedWords();
-        var blueList = wordPool.getBlueWords();
-        var brownList = wordPool.getBrownWords();
-        var blackList = wordPool.getBlackWords();
+        var redList = wordPool.getRedWords().map(extractWord);
+        var blueList = wordPool.getBlueWords().map(extractWord);
+        var brownList = wordPool.getBrownWords().map(extractWord);
+        var blackList = wordPool.getBlackWords().map(extractWord);
         var redWords = "RED WORDS:\n" + redList.join("\n");
         var blueWords = "BLUE WORDS:\n" + blueList.join("\n");
         var brownWords = "BLUE WORDS:\n" + brownList.join("\n");
@@ -126,7 +129,7 @@ var Codenames = {
       }
 
       this.teams[0].selectSpymaster();
-      //this.team[1].selectSpymaster();
+      this.team[1].selectSpymaster();
 
       cb(this.teams);
     };
